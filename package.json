@@ -1,0 +1,30 @@
+{
+  "name": "bitcoingazete",
+  "version": "1.0.0",
+  "description": "Bitcoin Gazete - Cloudflare Workers üzerinde yapay zeka destekli otomatik kripto haber sitesi",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "db:migrate:local": "wrangler d1 migrations apply bitcoingazete --local -c wrangler.local.jsonc",
+    "db:migrate": "wrangler d1 migrations apply bitcoingazete --remote",
+    "import:wp": "node scripts/import-wordpress.mjs",
+    "dev:local": "wrangler dev -c wrangler.local.jsonc --test-scheduled"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.137.0",
+    "fast-xml-parser": "^5.11.2",
+    "hono": "^4.13.13",
+    "marked": "^18.1.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261021.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.3"
+  },
+  "private": true,
+  "type": "module"
+}

@@ -1,0 +1,6 @@
+# Yerel geliştirme için: bu dosyayı .dev.vars olarak kopyalayın
+AI_MOCK=on
+ADMIN_PASSWORD=yerel-sifre
+IMAGE_GENERATION=off
+# Gerçek yapay zeka ile denemek için AI_MOCK=off yapıp anahtarınızı girin:
+# ANTHROPIC_API_KEY=sk-ant-...

@@ -1,0 +1,52 @@
+// Yerel geliştirme yapılandırması: Workers AI bağlaması (uzak bağlantı gerektirir) çıkarılmıştır.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bitcoingazete",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Alan adı: Cloudflare'de bitcoingazete.com zone'u aktif olduktan sonra açın.
+  // "routes": [
+  //   { "pattern": "bitcoingazete.com", "custom_domain": true },
+  //   { "pattern": "www.bitcoingazete.com", "custom_domain": true }
+  // ],
+
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bitcoingazete",
+      "database_id": "BURAYA_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Yapay zeka ile kapak görseli (isteğe bağlı). Kapatmak için IMAGE_GENERATION=off yapın.
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "bitcoingazete-media" }],
+
+  // Her 30 dakikada bir: kaynakları tara, haber seç, yaz, kontrol et, yayınla.
+  "triggers": { "crons": ["*/30 * * * *"] },
+
+  // Yazım + editör çağrıları uzun sürebilir; CPU limiti beklemeyi saymaz ama ayrıştırma için pay bırakıyoruz.
+  "limits": { "cpu_ms": 60000 },
+
+  "observability": { "enabled": true },
+
+  "vars": {
+    "SITE_URL": "https://bitcoingazete.com",
+    "SITE_NAME": "Bitcoin Gazete",
+    "PUBLISH_MODE": "auto",
+    "ARTICLES_PER_RUN": "2",
+    "DAILY_LIMIT": "24",
+    "MIN_QUALITY_SCORE": "7.5",
+    "MAX_REVISIONS": "2",
+    "WRITER_MODEL": "claude-opus-5-5",
+    "EDITOR_MODEL": "claude-opus-5-5",
+    "IMAGE_GENERATION": "on",
+    "AI_MOCK": "off"
+  }
+  // Gizli değişkenler (wrangler secret put ile):
+  //   ANTHROPIC_API_KEY, ADMIN_PASSWORD, (isteğe bağlı) COINGECKO_API_KEY
+}
