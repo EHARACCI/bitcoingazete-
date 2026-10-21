@@ -11,6 +11,7 @@ import { renderMarkdown } from "./lib/markdown";
 import { slugify, sqlNow, wordCount } from "./lib/text";
 import { getSetting, runPipeline, setSetting } from "./pipeline/run";
 import { newsSitemap, robots, rss, sitemap } from "./feeds";
+import { liveStub, onlineCount } from "./live";
 import { CSS } from "./views/styles";
 import { layout, type Html } from "./views/layout";
 import { articleJsonLd, articlePage, homePage, listPage, notFoundPage, STATIC_PAGES, staticPage, imageUrl } from "./views/pages";
@@ -151,6 +152,12 @@ app.get("/media/*", async (c) => {
   return new Response(obj.body, { headers });
 });
 
+// Anlık ziyaretçi sayacı (WebSocket)
+app.get("/api/canli", async (c) => {
+  if (c.req.header("upgrade")?.toLowerCase() !== "websocket") return c.text("WebSocket bekleniyor", 426);
+  return liveStub(c.env).fetch(c.req.raw);
+});
+
 app.post("/api/goruntulenme/:id", async (c) => {
   const id = Number(c.req.param("id"));
   if (id) c.executionCtx.waitUntil(c.env.DB.prepare("UPDATE articles SET views = views + 1 WHERE id = ? AND status = 'published'").bind(id).run());
@@ -175,7 +182,7 @@ app.use("/admin/*", async (c, next) => {
 app.get("/admin", (c) => c.redirect("/admin/"));
 
 app.get("/admin/", async (c) => {
-  const [{ results: counts }, today, { results: runs }, { results: sources }, paused] = await Promise.all([
+  const [{ results: counts }, today, { results: runs }, { results: sources }, paused, online] = await Promise.all([
     c.env.DB.prepare("SELECT status, COUNT(*) AS n FROM articles GROUP BY status").all<{ status: string; n: number }>(),
     c.env.DB.prepare(
       "SELECT COUNT(*) AS n FROM articles WHERE ai_generated = 1 AND status IN ('published','needs_review') AND created_at >= datetime('now','start of day')",
@@ -183,6 +190,7 @@ app.get("/admin/", async (c) => {
     c.env.DB.prepare("SELECT id, trigger, status, stats, started_at FROM runs ORDER BY id DESC LIMIT 15").all<{ id: number; trigger: string; status: string; stats: string | null; started_at: string }>(),
     c.env.DB.prepare("SELECT name, last_error, last_fetched_at, enabled FROM sources").all<{ name: string; last_error: string | null; last_fetched_at: string | null; enabled: number }>(),
     getSetting(c.env, "paused"),
+    onlineCount(c.env),
   ]);
   return c.html(
     adminShell(
@@ -190,6 +198,7 @@ app.get("/admin/", async (c) => {
       dashboard({
         counts: Object.fromEntries(counts.map((r) => [r.status, r.n])),
         today: today?.n ?? 0,
+        online,
         dailyLimit: Number(c.env.DAILY_LIMIT) || 24,
         paused: paused === "1",
         mode: c.env.PUBLISH_MODE,
@@ -317,6 +326,8 @@ app.onError((err, c) => {
   console.error(err);
   return c.text("Beklenmeyen bir hata oluştu.", 500);
 });
+
+export { LiveCounter } from "./live";
 
 export default {
   fetch: app.fetch,

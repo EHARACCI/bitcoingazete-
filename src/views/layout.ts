@@ -22,7 +22,15 @@ export interface LayoutOpts {
   body: Html;
 }
 
-export const CSS_VERSION = "1";
+export const CSS_VERSION = "2";
+
+/** Anlık ziyaretçi sayısını WebSocket ile alır; bağlantı koparsa artan aralıklarla yeniden dener. */
+const LIVE_SCRIPT = `(function(){var el=document.getElementById("live");if(!el||!("WebSocket" in window))return;
+var v;try{v=localStorage.getItem("vid");if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("vid",v)}}catch(e){v=Math.random().toString(36).slice(2)}
+var delay=1000,ping;function connect(){var ws=new WebSocket((location.protocol==="https:"?"wss://":"ws://")+location.host+"/api/canli?v="+v);
+ws.onopen=function(){delay=1000;ping=setInterval(function(){try{ws.send("ping")}catch(e){}},30000)};
+ws.onmessage=function(e){try{var n=JSON.parse(e.data).online;if(n>0){el.querySelector("b").textContent=n.toLocaleString("tr-TR");el.hidden=false}}catch(_){}};
+ws.onclose=function(){clearInterval(ping);setTimeout(connect,delay);delay=Math.min(delay*2,60000)}}connect()})();`;
 
 const icons = {
   search: raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>`),
@@ -76,7 +84,7 @@ ${o.head ?? ""}
 </head>
 <body>
 <a class="sr-only" href="#icerik">İçeriğe geç</a>
-<div class="topbar"><div class="wrap"><time>${today}</time>${tickerHtml(o.ticker ?? [])}</div></div>
+<div class="topbar"><div class="wrap"><time>${today}</time>${tickerHtml(o.ticker ?? [])}<span id="live" class="live-count" hidden><span class="live" aria-hidden="true"></span><b>0</b> kişi şu an sitede</span></div></div>
 <header class="masthead">
   <div class="wrap brand-row">
     <a class="logo" href="/" aria-label="${o.siteName} ana sayfa">
@@ -115,6 +123,7 @@ ${o.head ?? ""}
     <div class="legal"><span>© ${new Date().getFullYear()} ${o.siteName}. Tüm hakları saklıdır.</span><span>Sitedeki içerikler yatırım tavsiyesi değildir.</span></div>
   </div>
 </footer>
+<script>${raw(LIVE_SCRIPT)}</script>
 </body>
 </html>`;
 }

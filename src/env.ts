@@ -3,6 +3,7 @@ export interface Env {
   ASSETS: Fetcher;
   MEDIA?: R2Bucket;
   AI?: Ai;
+  LIVE: DurableObjectNamespace;
 
   SITE_URL: string;
   SITE_NAME: string;

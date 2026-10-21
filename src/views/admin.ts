@@ -28,6 +28,7 @@ export interface DashboardData {
   counts: Record<string, number>;
   today: number;
   dailyLimit: number;
+  online: number | null;
   paused: boolean;
   mode: string;
   mock: boolean;
@@ -40,6 +41,7 @@ export function dashboard(d: DashboardData) {
   return html`
   ${d.mock ? html`<p class="note note-ai" style="max-width:none">AI_MOCK=on: Sahte yazar kullanılıyor, gerçek haber üretilmez.</p>` : ""}
   <div class="stats">
+    <div class="stat"><b>${d.online ?? "—"}</b><span>Şu an sitede</span></div>
     <div class="stat"><b>${d.today}/${d.dailyLimit}</b><span>Bugün üretilen</span></div>
     <div class="stat"><b>${d.counts.published ?? 0}</b><span>Yayında</span></div>
     <div class="stat"><b>${d.counts.needs_review ?? 0}</b><span>Onay bekleyen</span></div>

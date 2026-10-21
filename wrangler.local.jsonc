@@ -14,6 +14,10 @@
 
   "assets": { "directory": "./public", "binding": "ASSETS" },
 
+  // Anlık ziyaretçi sayacı
+  "durable_objects": { "bindings": [{ "name": "LIVE", "class_name": "LiveCounter" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LiveCounter"] }],
+
   "d1_databases": [
     {
       "binding": "DB",

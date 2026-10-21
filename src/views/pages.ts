@@ -238,7 +238,7 @@ export const STATIC_PAGES: Record<string, { title: string; description: string; 
     body: `
 <p>Bitcoin Gazete, ziyaretçilerinin kişisel verilerinin korunmasına önem verir. Sitemizde üyelik sistemi bulunmamakta ve ziyaretçilerden kişisel veri toplanmamaktadır.</p>
 <h2>Çerezler</h2>
-<p>Sitemiz yalnızca tema tercihiniz (açık/koyu) gibi işlevsel bilgileri tarayıcınızın yerel depolamasında saklar. Reklam veya takip amaçlı çerez kullanılmaz.</p>
+<p>Sitemiz yalnızca tema tercihiniz (açık/koyu) ve anlık ziyaretçi sayısını hesaplamak için kullanılan rastgele bir kimlik gibi işlevsel bilgileri tarayıcınızın yerel depolamasında saklar. Bu kimlik sizi tanımlamaz ve hiçbir kişisel veriyle eşleştirilmez. Reklam veya takip amaçlı çerez kullanılmaz.</p>
 <h2>Sunucu kayıtları</h2>
 <p>Altyapı sağlayıcımız Cloudflare, güvenlik ve performans amacıyla anonim teknik kayıtlar tutabilir.</p>
 <h2>İletişim</h2>
