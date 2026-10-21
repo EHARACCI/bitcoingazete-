@@ -21,7 +21,7 @@
     {
       "binding": "DB",
       "database_name": "bitcoingazete",
-      "database_id": "BURAYA_D1_DATABASE_ID",
+      "database_id": "f10affda-d8b5-465d-91e2-4ec885feb293",
       "migrations_dir": "migrations"
     }
   ],
