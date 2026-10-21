@@ -33,6 +33,15 @@ const slugify = (s) =>
   s.replace(/[çğıİöşüÇĞÖŞÜ]/g, (c) => TR[c]).toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 90).replace(/-+$/, "");
 const q = (s) => `'${String(s ?? "").replace(/'/g, "''")}'`;
+// WordPress uzun slug'ları kırparken yüzde kodlamasını yarıda bırakabilir.
+const decodeSlug = (s) =>
+  s.replace(/(%[0-9a-f]{2})+/gi, (run) => {
+    // Bozuk sondaki baytları atarak çözülebilen kısmı koru
+    for (let r = run; r; r = r.slice(0, -3)) {
+      try { return decodeURIComponent(r); } catch {}
+    }
+    return "";
+  }).replace(/%/g, "");
 const strip = (h) => h.replace(/<[^>]+>/g, " ").replace(/&#8217;|&rsquo;/g, "’").replace(/&#8220;|&#8221;/g, '"').replace(/&nbsp;|&#160;/g, " ")
   .replace(/&amp;/g, "&").replace(/&#8230;/g, "…").replace(/&[a-z0-9#]+;/gi, " ").replace(/\s+/g, " ").trim();
 
@@ -77,7 +86,7 @@ for (let page = 1; ; page++) {
       }
     }
     const legacyPath = new URL(p.link).pathname;
-    const slug = slugify(decodeURIComponent(p.slug)) || `yazi-${p.id}`;
+    const slug = slugify(decodeSlug(p.slug)) || `yazi-${p.id}`;
     const date = p.date_gmt.replace("T", " ");
     const modified = (p.modified_gmt || p.date_gmt).replace("T", " ");
     const words = strip(bodyHtml).split(" ").length;

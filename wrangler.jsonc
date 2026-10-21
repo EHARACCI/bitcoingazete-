@@ -30,11 +30,8 @@
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "bitcoingazete-media" }],
   "ai": { "binding": "AI" },
 
-  // Her 30 dakikada bir: kaynakları tara, haber seç, yaz, kontrol et, yayınla.
-  "triggers": { "crons": ["*/30 * * * *"] },
-
-  // Yazım + editör çağrıları uzun sürebilir; CPU limiti beklemeyi saymaz ama ayrıştırma için pay bırakıyoruz.
-  "limits": { "cpu_ms": 60000 },
+  // Günde 5 kez (UTC 04, 08, 12, 16, 20 = TSİ 07, 11, 15, 19, 23): kaynakları tara, haber seç, yaz, kontrol et, yayınla.
+  "triggers": { "crons": ["0 4,8,12,16,20 * * *"] },
 
   "observability": { "enabled": true },
 
@@ -42,12 +39,12 @@
     "SITE_URL": "https://bitcoingazete.com",
     "SITE_NAME": "Bitcoin Gazete",
     "PUBLISH_MODE": "review",
-    "ARTICLES_PER_RUN": "2",
-    "DAILY_LIMIT": "24",
+    "ARTICLES_PER_RUN": "1",
+    "DAILY_LIMIT": "5",
     "MIN_QUALITY_SCORE": "7.5",
     "MAX_REVISIONS": "2",
-    "WRITER_MODEL": "claude-opus-5-5",
-    "EDITOR_MODEL": "claude-opus-5-5",
+    "WRITER_MODEL": "claude-sonnet-5-5",
+    "EDITOR_MODEL": "claude-sonnet-5-5",
     "IMAGE_GENERATION": "on",
     "AI_MOCK": "off"
   }
