@@ -41,7 +41,7 @@
   "vars": {
     "SITE_URL": "https://bitcoingazete.com",
     "SITE_NAME": "Bitcoin Gazete",
-    "PUBLISH_MODE": "auto",
+    "PUBLISH_MODE": "review",
     "ARTICLES_PER_RUN": "2",
     "DAILY_LIMIT": "24",
     "MIN_QUALITY_SCORE": "7.5",
